@@ -52,6 +52,32 @@ app.get("/", (req: Request, res: Response) => {
 	res.send("Hello Worldddd!");
 });
 
+app.get("/users", async (req: Request, res: Response) => {
+	
+	try {
+		const result = await pool.query(
+			`
+            SELECT * FROM users`,
+			
+		);
+        // console.log("All users :", result);
+		
+		res.status(200).json({
+			success: true,
+			message: "Data retrieved Successfully",
+			data: result.rows,
+		});
+	} catch (err: any) {
+		res.status(500).json({
+			success: false,
+			message: err.message,
+            details: err,
+		});
+	}
+
+});
+
+
 app.post("/users", async (req: Request, res: Response) => {
 	// console.log(req);
 	const { name, email } = req.body;
