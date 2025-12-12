@@ -52,6 +52,7 @@ app.get("/", (req: Request, res: Response) => {
 	res.send("Hello Worldddd!");
 });
 
+// ------------------- users crud ops starts here --------------------
 app.get("/users/:id", async (req: Request, res: Response) => {
 	// console.log('Req object --------- ***************** -------------');
 	// console.log(req);
@@ -178,7 +179,7 @@ app.delete("/users/:id", async (req: Request, res: Response) => {
 		
 		);
 
-        console.log('Delete result : -------', result);
+       console.log('Delete result : -------', result);
         console.log('RowCount : -------', result.rowCount);
 
 		if (result.rowCount === 0) {
@@ -200,6 +201,29 @@ app.delete("/users/:id", async (req: Request, res: Response) => {
 		});
 	}
 });
+// ------------------- users crud ops ends here --------------------
+
+// ------------------- todos crud ops starts here --------------------
+app.post("/todos", async(req: Request, res: Response)=>{
+    const {user_id, title} = req.body;
+
+    try{
+        const result = await pool.query(`
+                INSERT INTO todos(user_id, title) VALUES($1, $2) RETURNING * 
+            `,[user_id, title]);
+        res.status(201).json({
+            success: true, 
+            message: "todos data inserted Successfully",
+            data: result.rows[0]
+        })
+    }
+    catch(err:any){
+        res.status(500).json({
+            success: false,
+            message: err.message,
+        })
+    }
+})
 
 app.listen(port, () => {
 	console.log(`Example app listening on port ${port}`);
