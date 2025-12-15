@@ -143,6 +143,7 @@ app.post("/users", async (req: Request, res: Response) => {
 	}
 });
 
+
 app.put("/users/:id", async (req: Request, res: Response) => {
 	const { name, email } = req.body;
 	const idFromParams = req.params.id;
