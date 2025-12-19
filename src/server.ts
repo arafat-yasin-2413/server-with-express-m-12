@@ -296,6 +296,26 @@ app.put("/todo/:id", async(req: Request, res: Response) => {
         }
 });
 
+
+// delete todo
+app.delete("/todos/:id", async(req:Request, res:Response)=>{
+    try{
+        const result = await pool.query(`
+                DELETE FROM todos WHERE id=$1 RETURNING *
+            `,[req.params.id]);
+
+        if(result.rowCount === 0) {
+            return res.status(404).json({error: "Todo not found"});
+        }
+        res.json({ success: true, message: "Todo deleted", data: null});
+    }
+    catch(err){
+        console.log(err);
+        res.status(500).json({error: "Failed to delete Todo"});
+    }
+});
+
+
 // Not Found route
 app.use((req, res)=>{
     res.status(404).json({
