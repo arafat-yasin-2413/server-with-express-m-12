@@ -25,31 +25,8 @@ app.get("/", logger, (req: Request, res: Response) => {
 
 // CRUD 
 app.use("/users",userRoutes)
-
 app.use("/todos",todoRoutes);
 
-// update todo
-app.put("/todo/:id", async (req: Request, res: Response) => {
-	const { title, completed } = req.body;
-
-	try {
-		const result = await pool.query(
-			`
-                UPDATE todos SET title=$1, completed=$2 WHERE id=$3 RETURNING *
-            `,
-			[title, completed, req.params.id]
-		);
-
-		if (result.rows.length === 0) {
-			return res.status(404).json({ error: "Todo not found" });
-		}
-
-		res.json(result.rows[0]);
-	} catch (err) {
-		console.log(err);
-		res.status(500).json({ error: "Failed to update Todo" });
-	}
-});
 
 // delete todo
 app.delete("/todos/:id", async (req: Request, res: Response) => {
