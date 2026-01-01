@@ -26,47 +26,9 @@ app.get("/", logger, (req: Request, res: Response) => {
 // ------------------- users crud ops starts here --------------------
 
 
-
-
 app.use("/users",userRoutes)
 
 
-
-
-
-app.delete("/users/:id", async (req: Request, res: Response) => {
-	const idFromParams = req.params.id;
-
-	try {
-		const result = await pool.query(
-			`
-                DELETE FROM users WHERE id = $1    
-            `,
-			[idFromParams]
-		);
-
-		console.log("Delete result : -------", result);
-		console.log("RowCount : -------", result.rowCount);
-
-		if (result.rowCount === 0) {
-			res.status(404).json({
-				success: false,
-				message: "User not found",
-			});
-		} else {
-			res.status(200).json({
-				success: true,
-				message: "User deleted Successfully",
-				data: result.rows,
-			});
-		}
-	} catch (err: any) {
-		res.status(500).json({
-			success: false,
-			message: err.message,
-		});
-	}
-});
 // ------------------- users crud ops ends here --------------------
 
 // ------------------- todos crud ops starts here --------------------
