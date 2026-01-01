@@ -4,8 +4,8 @@ import { todoControllers } from "./todo.controller";
 const router = express.Router();
 
 router.post("/", todoControllers.createTodo);
-// router.get("/", userControllers.getAllUser);
-// router.get("/:id", userControllers.getUserById);
+router.get("/", todoControllers.getAllTodo);
+router.get("/:id", todoControllers.getTodoById);
 // router.put("/:id", userControllers.updateUserById);
 // router.delete("/:id", userControllers.deleteUserById);
 

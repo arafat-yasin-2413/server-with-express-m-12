@@ -11,9 +11,15 @@ const getAllTodo = async()=>{
     return result;
 }
 
+const getTodoById = async (id:string) =>{
+    const result = await pool.query(`SELECT * FROM todos WHERE id = $1`,[id]);
+    return result;
+}
+
 
 
 export const todoServices = {
     createTodo,
     getAllTodo,
+    getTodoById,
 }

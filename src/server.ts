@@ -11,8 +11,7 @@ const port = config.port;
 
 // parser (middleware)
 app.use(express.json());
-// app.use(express.urlencoded());
-
+// app.use(express.urlencoded()); // to handle form data
 
 // initializing DB
 initDB();
@@ -24,37 +23,10 @@ app.get("/", logger, (req: Request, res: Response) => {
 	res.send("Hello Worldddd!");
 });
 
-// ------------------- users crud ops starts here --------------------
-
+// CRUD 
 app.use("/users",userRoutes)
 
-// ------------------- users crud ops ends here --------------------
-
-// ------------------- todos crud ops starts here --------------------
 app.use("/todos",todoRoutes);
-
-
-
-// get single todo
-app.get("/todos/:id", async (req: Request, res: Response) => {
-	try {
-		const result = await pool.query(
-			`
-                SELECT * FROM todos WHERE id = $1
-            `,
-			[req.params.id]
-		);
-
-		if (result.rows.length === 0) {
-			return res.status(404).json({ error: "Todo not found" });
-		}
-
-		res.json(result.rows[0]);
-	} catch (err) {
-		console.log(err);
-		res.status(500).json({ error: "Failed to fetch Todo" });
-	}
-});
 
 // update todo
 app.put("/todo/:id", async (req: Request, res: Response) => {
