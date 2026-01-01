@@ -42,7 +42,39 @@ const getAllUser = async (req: Request, res: Response) => {
     }
 }
 
+const getUserById = async (req: Request, res: Response) => {
+	// console.log('Req object --------- ***************** -------------');
+	// console.log(req);
+	// console.log("---------------Req obj printing ends here---------------------------");
+
+	// console.log("req.params = ", req.params.id);
+	// res.send({message: "Getting single users id "});
+
+	// const idFromParams = req.params.id;
+	try {
+		const result = await userServices.getUserById(req.params.id as string)
+
+		console.log(result.rows);
+
+		if (result.rows.length === 0) {
+			res.status(404).json({ success: false, message: "User not Found" });
+		} else {
+			res.status(200).json({
+				success: true,
+				message: "User has been found.",
+				data: result.rows[0],
+			});
+		}
+	} catch (err: any) {
+		res.status(500).json({
+			success: false,
+			message: err.message,
+		});
+	}
+}
+
 export const userControllers = {
     createUser,
     getAllUser,
+    getUserById,
 }
