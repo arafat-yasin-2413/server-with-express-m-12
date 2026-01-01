@@ -7,7 +7,7 @@ router.post("/", todoControllers.createTodo);
 router.get("/", todoControllers.getAllTodo);
 router.get("/:id", todoControllers.getTodoById);
 router.put("/:id", todoControllers.updateTodoById);
-// router.delete("/:id", userControllers.deleteUserById);
+router.delete("/:id", todoControllers.deleteTodoById);
 
 
 export const todoRoutes = router;
