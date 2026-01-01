@@ -1,6 +1,8 @@
 import express, { NextFunction, Request, Response } from "express";
 import config from "./config";
 import initDB, { pool } from "./config/db";
+import logger from "./middleware/logger";
+import { userRoutes } from "./modules/user/user.routes";
 
 
 const app = express();
@@ -15,10 +17,7 @@ app.use(express.json());
 initDB();
 
 // logger middleware
-const logger = (req: Request, res: Response, next: NextFunction) => {
-	console.log(`[${new Date().toISOString()}] [${req.method}] [${req.path}]\n`);
-	next();
-};
+
 
 app.get("/", logger, (req: Request, res: Response) => {
 	res.send("Hello Worldddd!");
@@ -61,52 +60,9 @@ app.get("/users/:id", async (req: Request, res: Response) => {
 	}
 });
 
-app.get("/users", async (req: Request, res: Response) => {
-	try {
-		const result = await pool.query(
-			`
-            SELECT * FROM users`
-		);
-		// console.log("All users :", result);
 
-		res.status(200).json({
-			success: true,
-			message: "Data retrieved Successfully",
-			data: result.rows,
-		});
-	} catch (err: any) {
-		res.status(500).json({
-			success: false,
-			message: err.message,
-			details: err,
-		});
-	}
-});
 
-app.post("/users", async (req: Request, res: Response) => {
-	// console.log(req);
-	const { name, email } = req.body;
-
-	try {
-		const result = await pool.query(
-			`
-            INSERT INTO users(name, email) VALUES($1, $2) RETURNING * `,
-			[name, email]
-		);
-		// console.log(result.rows[0]);
-		// res.send({message: "data inserted"})
-		res.status(201).json({
-			success: true,
-			message: "Data inserted Successfully",
-			data: result.rows[0],
-		});
-	} catch (err: any) {
-		res.status(500).json({
-			success: false,
-			message: err.message,
-		});
-	}
-});
+app.use("/users",userRoutes)
 
 app.put("/users/:id", async (req: Request, res: Response) => {
 	const { name, email } = req.body;
