@@ -33,27 +33,7 @@ app.use("/users",userRoutes)
 // ------------------- todos crud ops starts here --------------------
 app.use("/todos",todoRoutes);
 
-app.get("/todos", async (req: Request, res: Response) => {
-	try {
-		const result = await pool.query(
-			`
-            SELECT * FROM todos`
-		);
-		// console.log("All todos :", result);
 
-		res.status(200).json({
-			success: true,
-			message: "Data retrieved Successfully",
-			data: result.rows,
-		});
-	} catch (err: any) {
-		res.status(500).json({
-			success: false,
-			message: err.message,
-			details: err,
-		});
-	}
-});
 
 // get single todo
 app.get("/todos/:id", async (req: Request, res: Response) => {
