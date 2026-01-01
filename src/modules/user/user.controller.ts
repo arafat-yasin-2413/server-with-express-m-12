@@ -73,8 +73,36 @@ const getUserById = async (req: Request, res: Response) => {
 	}
 }
 
+const updateUserById = async (req: Request, res: Response) => {
+    const { name, email } = req.body;
+    // const idFromParams = req.params.id;
+
+    try {
+        const result = await userServices.updateUserById(name, email, req.params.id as string);
+
+        if (result.rows.length === 0) {
+            res.status(404).json({
+                success: false,
+                message: "User not found",
+            });
+        } else {
+            res.status(200).json({
+                success: true,
+                message: "User updated Successfully",
+                data: result.rows[0],
+            });
+        }
+    } catch (err: any) {
+        res.status(500).json({
+            success: false,
+            message: err.message,
+        });
+    }
+}
+
 export const userControllers = {
     createUser,
     getAllUser,
     getUserById,
+    updateUserById,
 }
