@@ -3,7 +3,7 @@ import { NextFunction, Request, Response } from "express";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import config from "../config";
 // higher order function
-const auth = () => {
+const auth = (...roles:string[]) => {
 	return async (req: Request, res: Response, next: NextFunction) => {
 		try {
 			const token = req.headers.authorization?.split(" ")[1];
@@ -12,9 +12,18 @@ const auth = () => {
 				return res.status(500).json({ message: "You are not allowed" });
 			}
 			console.log({ authToken: token });
-			const decoded = jwt.verify(token, config.jwtSecret as string);
+			const decoded = jwt.verify(token, config.jwtSecret as string) as JwtPayload;
 			console.log({ decoded });
-			req.user = decoded as JwtPayload;
+			req.user = decoded;
+
+
+            // ["admin"]
+            if(roles.length && !roles.includes(decoded.role as string)) {
+                return res.status(500).json({
+                    error: "unauthorized!!!",
+                });
+            }
+
 			return next();
 		} catch (err: any) {
 			res.status(500).json({
